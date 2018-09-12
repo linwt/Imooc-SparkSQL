@@ -80,10 +80,23 @@ fork到自己仓库，克隆项目到本地（D:\）
 -Dversion=1.0 \
 -Dpackaging=jar
 4. 导入依赖
+
 > <dependency>
     <groupId>com.ggstar</groupId>
     <artifactId>ipdatabase</artifactId>
     <version>1.0</version>
+</dependency>
+
+> <dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>3.14</version>
+</dependency>
+
+> <dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi</artifactId>
+    <version>3.14</version>
 </dependency>
 
 5. 将ipDatabase/target/classes/ipDatabase.csv和ipDatabase/target/classes/ipRegion.xlsx复制到src/main/resources/
