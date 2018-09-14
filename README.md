@@ -5,6 +5,10 @@
 2. 将Imooc_SparkSQL和Imooc_Web项目分别导入IDEA
 3. 正确设置Imooc_Data里日志文件的路径
 4. 阅读代码，运行项目
+## 软件版本
+1. spark-2.1.0-bin-hadoop2.6
+2. scala-2.11.8
+3. hadoop-2.6.4
 ## 项目需求
 1. 按天统计最受欢迎课程
 2. 按城市统计最受欢迎课程
@@ -30,14 +34,19 @@ http://www.imooc.com/article/17891  article  17891  407  218.75.35.226  北京  
 ### TopN统计分析
 1. 读取二次清洗结果文件
 2. 使用DataFrame方式或MySQL方式统计数据
-3. 启动mysql，创建数据库和相应表
+3. dos中启动mysql，创建数据库和相应表
 4. 调用DAO将结果写入MySQL数据库
 ### Spark on YARN
-1. 编译打包：> mvn assembly:assembly
-2. 上传"jar包、ipDatabase.csv、ipResgion.xlsx、format日志文件"到linux的/home/hadoop/imooc/
+#### CleanYarn数据清洗运行在yarn上
+1. 打包
+> - File → Project Structure → Artifacts → “+” → JAR → From modules with dependencies → Main Class:CleanYarn → OK
+> - Build → Build Artifacts → Build 
+2. 上传"Imooc_SparkSQL.jar、ipDatabase.csv、ipResgion.xlsx、format日志文件"到linux的/home/hadoop/imooc/
 3. 启动hadoop，上传format日志文件到hdfs的/imooc/input/
-4. 导入hadoop路径：export HADOOP_CONF_DIR=/home/hadoop/apps/hadoop/etc/hadoop
-5. CleanYarn数据清洗运行在yarn上
+4. 导入hadoop路径
+> - 方式一：执行命令export HADOOP_CONF_DIR=/home/hadoop/apps/hadoop/etc/hadoop
+> - 方式二：spark/conf/spark-env.sh配置文件中添加：export YARN_CONF_DIR=/home/hadoop/apps/hadoop/etc/hadoop
+5. 提交作业
 > [hadoop@mini1 spark]$ ./bin/spark-submit \
 > --class main.CleanYarn \
 > --name CleanYarn \
@@ -45,22 +54,31 @@ http://www.imooc.com/article/17891  article  17891  407  218.75.35.226  北京  
 > --executor-memory 1G \
 > --num-executors 1 \
 > --files /home/hadoop/imooc/ipDatabase.csv,/home/hadoop/imooc/ipRegion.xlsx \
-> /home/hadoop/imooc/Imooc_SparkSQL-1.0-SNAPSHOT-jar-with-dependencies.jar \
-> hdfs://mini1:50070/imooc/input/* \
-> hdfs://mini1:50070/imooc/clean
-6. TopNYarn统计分析运行在yarn上
+> /home/hadoop/imooc/Imooc_SparkSQL.jar \
+> hdfs://mini1:9000/imooc/input/* \
+> hdfs://mini1:9000/imooc/clean
+6. hdfs查看运行结果，即产生clean目录文件
+
+#### TopNYarn统计分析运行在yarn上
+1. 打包
+> - Build → Build Artifacts → Edit → Main Class:TopNYarn → OK
+> - Build → Build Artifacts → Rebuild
+2. 删除旧jar包，重新上传新jar包到linux的/home/hadoop/imooc/
+3. linux中启动mysql，创建数据库和相应表
+4. 提交作业
 > [hadoop@mini1 spark]$ ./bin/spark-submit \
 > --class main.TopNYarn \
 > --name TopNYarn \
 > --master yarn \
 > --executor-memory 1G \
 > --num-executors 1 \
-> /home/hadoop/imooc/Imooc_SparkSQL-1.0-SNAPSHOT-jar-with-dependencies.jar \
-> hdfs://mini1:50070/imooc/clean 2017-05-11
-7. web访问
+> /home/hadoop/imooc/Imooc_SparkSQL.jar \
+> hdfs://mini1:9000/imooc/clean 2017-05-11
+5. linux的mysql中查看运行结果，即插入数据到表
+#### web访问路径
 > - yarn   mini1:8088
 > - hdfs   mini1:50070
-8. 打开mysql查看运行结果
+
 ### 可视化展示
 1. 配置、启动tomcat
 2. 读取mysql数据，使用Echarts展示
