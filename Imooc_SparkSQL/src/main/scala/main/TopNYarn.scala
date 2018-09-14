@@ -18,7 +18,7 @@ object TopNYarn {
     val spark = SparkSession.builder()
       .config("spark.sql.sources.partitionColumnTypeInference.enabled", false)
       .getOrCreate()
-    val df = spark.read.format("parquet").load("inputpath")
+    val df = spark.read.format("parquet").load(inputpath)
     df.printSchema()
     df.show(false)
 
