@@ -47,7 +47,7 @@ http://www.imooc.com/article/17891  article  17891  407  218.75.35.226  北京  
 > - 方式一：执行命令export HADOOP_CONF_DIR=/home/hadoop/apps/hadoop/etc/hadoop
 > - 方式二：spark/conf/spark-env.sh配置文件中添加：export YARN_CONF_DIR=/home/hadoop/apps/hadoop/etc/hadoop
 5. 提交作业
-> [hadoop@mini1 spark]$ ./bin/spark-submit \
+> [hadoop@mini1 spark]$ bin/spark-submit \
 > --class main.CleanYarn \
 > --name CleanYarn \
 > --master yarn \
@@ -66,7 +66,7 @@ http://www.imooc.com/article/17891  article  17891  407  218.75.35.226  北京  
 2. 删除旧jar包，重新上传新jar包到linux的/home/hadoop/imooc/
 3. linux中启动mysql，创建数据库和相应表
 4. 提交作业
-> [hadoop@mini1 spark]$ ./bin/spark-submit \
+> [hadoop@mini1 spark]$ bin/spark-submit \
 > --class main.TopNYarn \
 > --name TopNYarn \
 > --master yarn \
